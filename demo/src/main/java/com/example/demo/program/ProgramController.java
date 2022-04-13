@@ -1,6 +1,5 @@
-package com.example.demo.programmer;
+package com.example.demo.program;
 
-import com.example.demo.raport.Raport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,43 +10,41 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@RequestMapping("/program")
 @CrossOrigin
-@RequestMapping("/programmer")
-public class ProgrammerController {
+public class ProgramController {
 
-    private final ProgrammerRepository programmerRepository;
-
+    private final ProgramRepository programRepository;
     @Autowired
-    public ProgrammerController(ProgrammerRepository programmerRepository) {
-        this.programmerRepository = programmerRepository;
+    public ProgramController(ProgramRepository programRepository) {
+        this.programRepository = programRepository;
     }
-
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<Programmer>> getAll(){
-        List<Programmer> result = programmerRepository.findAll();
-        if(result.isEmpty()) {
+    public ResponseEntity<List<Program>> getAll(){
+        List<Program> result = programRepository.findAll();
+        if(result.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(result, HttpStatus.OK);
     }
     @RequestMapping("/findById")
-    public ResponseEntity< Optional<Programmer>> findById(@RequestParam("id") Long id){
-        if(id == null || id<1) {
+    public ResponseEntity<Optional<Program>> findById(@RequestParam("id") Long id){
+        if(id == null || id<1)  {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        Optional<Programmer> result = programmerRepository.findById(id);
-        if(result.isEmpty()) {
+        Optional<Program> result = programRepository.findById(id);
+        if(result.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Programmer> create(@RequestBody Programmer programmer){
-        Programmer result;
+    public ResponseEntity<Program> create(@RequestBody Program program){
+        Program result;
         try{
-            result = programmerRepository.save(programmer);
+            result = programRepository.save(program);
         }
         catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -60,24 +57,25 @@ public class ProgrammerController {
         if(id == null || id<1) {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
-        programmerRepository.deleteById(id);
+        programRepository.deleteById(id);
         return  new ResponseEntity<>("Deleted", HttpStatus.OK);
     }
     @Transactional
     @PostMapping("/update")
-    public ResponseEntity<Programmer> update(@RequestBody Programmer programmer){
-        Long id = programmer.getId();
-        Optional<Programmer> result = programmerRepository.findById(id);
+    public ResponseEntity<Program> update(@RequestBody Program program){
+        Long id = program.getId();
+        Optional<Program> result = programRepository.findById(id);
         if(result.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
         try{
-            programmer = programmerRepository.save(programmer);
+            program = programRepository.save(program);
         }
         catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(programmer, HttpStatus.OK);
+        return new ResponseEntity<>(program, HttpStatus.OK);
     }
+
 
 }

@@ -1,27 +1,42 @@
 package com.example.demo.programmer;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
+import org.hibernate.Hibernate;
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
-@Entity
-@Table
-@NoArgsConstructor
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
-public @Data
-class Programmer implements Serializable {
+@Entity(name = "programmer")
+@Table(name = "programmer")
+@Getter
+@Setter
+@ToString
+public class Programmer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "programmer_sequence")
-    @SequenceGenerator(name = "programmer_sequence", sequenceName = "programmer_sequence", allocationSize = 1)
     @Column(name = "id", nullable = false)
     private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "surname")
     private String surname;
-    private Integer age;
+    @Column(name = "email")
     private String email;
+    @Column(name = "age")
+    private Integer age;
+    @Column(name = "password")
+    private String password;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Programmer that = (Programmer) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
