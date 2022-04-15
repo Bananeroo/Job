@@ -1,5 +1,6 @@
 package com.example.demo.program;
 
+import com.example.demo.programmer.Programmer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,34 +23,29 @@ public class ProgramController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<Program>> getAll(){
-        List<Program> result = programRepository.findAll();
-        if(result.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-            return new ResponseEntity<>(result, HttpStatus.OK);
+        List<Program> listOfProgram = programRepository.findAll();
+            return new ResponseEntity<>(listOfProgram, HttpStatus.OK);
     }
     @RequestMapping("/findById")
     public ResponseEntity<Optional<Program>> findById(@RequestParam("id") Long id){
-        if(id == null || id<1)  {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }
-        Optional<Program> result = programRepository.findById(id);
-        if(result.isEmpty()){
+        Optional<Program> optionalProgram = programRepository.findById(id);
+        if(optionalProgram.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(optionalProgram, HttpStatus.OK);
     }
 
     @PostMapping("/create")
     public ResponseEntity<Program> create(@RequestBody Program program){
-        Program result;
+        Program newProgram = new Program();
+        newProgram.updateProgram(program);
         try{
-            result = programRepository.save(program);
+            newProgram = programRepository.save(program);
         }
         catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(newProgram, HttpStatus.OK);
 
     }
     @DeleteMapping("/delete")
@@ -64,17 +60,19 @@ public class ProgramController {
     @PostMapping("/update")
     public ResponseEntity<Program> update(@RequestBody Program program){
         Long id = program.getId();
-        Optional<Program> result = programRepository.findById(id);
-        if(result.isEmpty()){
+        Optional<Program> optionalProgram = programRepository.findById(id);
+        if(optionalProgram.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+        Program programToUpdate = optionalProgram.get();
+        programToUpdate.updateProgram(program);
         try{
-            program = programRepository.save(program);
+            programToUpdate = programRepository.save(programToUpdate);
         }
         catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(program, HttpStatus.OK);
+        return new ResponseEntity<>(programToUpdate, HttpStatus.OK);
     }
 
 

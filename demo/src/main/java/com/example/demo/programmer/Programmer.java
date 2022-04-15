@@ -3,7 +3,6 @@ package com.example.demo.programmer;
 import lombok.*;
 import org.hibernate.Hibernate;
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "programmer")
@@ -11,7 +10,7 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class Programmer implements Serializable {
+public class Programmer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "programmer_sequence")
     @Column(name = "id", nullable = false)
@@ -39,4 +38,14 @@ public class Programmer implements Serializable {
     public int hashCode() {
         return getClass().hashCode();
     }
+
+    public void updateProgrammer(Programmer programmer){
+        this.id = programmer.getId();
+        this.name = programmer.getName();
+        this.surname = programmer.getSurname();
+        this.email = programmer.getEmail();
+        this.age = programmer.getAge();
+        this.password = programmer.getPassword();
+    }
+
 }

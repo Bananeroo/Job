@@ -6,7 +6,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Objects;
@@ -17,7 +16,7 @@ import java.util.Objects;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Raport implements Serializable {
+public class Raport {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "raport_sequence")
     @Column(name = "id", nullable = false)
@@ -52,5 +51,14 @@ public class Raport implements Serializable {
         return getClass().hashCode();
     }
 
+    public void udpateRaport(Raport raport){
+        this.id = raport.getId();
+        this.title=raport.getTitle();
+        this.description=raport.getDescription();
+        this.date=raport.getDate();
+        this.timestamp=raport.getTimestamp();
+        this.programmer=raport.getProgrammer();
+        this.program=raport.getProgram();
+    }
 
 }

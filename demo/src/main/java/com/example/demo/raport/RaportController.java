@@ -26,56 +26,50 @@ public class RaportController {
         this.programRepository = programRepository;
         this.programmerRepository = programmerRepository;
     }
-    @Transactional
+
     @GetMapping("/getAll")
     public ResponseEntity<List<Raport>>getAll(){
-        List<Raport> result = raportRepository.findAll();
-        if(result.isEmpty()){
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
-        return  new ResponseEntity<>(result, HttpStatus.OK);
+        List<Raport> listOfRaport = raportRepository.findAll();
+        return  new ResponseEntity<>(listOfRaport, HttpStatus.OK);
     }
 
     @RequestMapping("/findById")
         public ResponseEntity<Optional<Raport>> findById(@RequestParam("id") Long id){
-        if(id == null || id<1) {
-            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        }Optional<Raport> result = raportRepository.findById(id);
-        if(result.isEmpty()){
+        Optional<Raport> optionalRaport = raportRepository.findById(id);
+        if(optionalRaport.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(optionalRaport, HttpStatus.OK);
     }
 
     @RequestMapping("/create")
     public ResponseEntity<Raport> createRaport(@RequestBody RaportWrapper raportWrapper) {
 
-        Raport raport = new Raport();
+        Raport newRaport = new Raport();
 
-        raport.setTitle(raportWrapper.getTitle());
-        raport.setDate(raportWrapper.getDate());
-        raport.setDescription(raportWrapper.getDescription());
+        newRaport.setTitle(raportWrapper.getTitle());
+        newRaport.setDescription(raportWrapper.getDescription());
+        newRaport.setDate(raportWrapper.getDate());
 
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        raport.setTimestamp(timestamp);
+        newRaport.setTimestamp(timestamp);
 
         Long programmerId= raportWrapper.getProgrammerId();
         Long programId= raportWrapper.getProgramId();
 
-        Optional<Programmer> programmer = programmerRepository.findById(programmerId);
-        Optional<Program> program = programRepository.findById(programId);
-        if(programmer.isEmpty() || program.isEmpty()) {
+        Optional<Programmer> optionalProgrammer = programmerRepository.findById(programmerId);
+        Optional<Program> optionalProgram = programRepository.findById(programId);
+        if(optionalProgrammer.isEmpty() || optionalProgram.isEmpty()) {
             return new ResponseEntity<>(null,HttpStatus.BAD_REQUEST);
         }
-        raport.setProgrammer(programmer.get());
-        raport.setProgram(program.get());
+        newRaport.setProgrammer(optionalProgrammer.get());
+        newRaport.setProgram(optionalProgram.get());
         try{
-            raportRepository.save(raport);
+            raportRepository.save(newRaport);
         }catch (Exception e){
             return  new ResponseEntity<>(null,HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return  new ResponseEntity<>(raport,HttpStatus.OK);
+        return  new ResponseEntity<>(newRaport,HttpStatus.OK);
     }
     @DeleteMapping("/delete")
     public ResponseEntity<String> delete(@RequestParam("id") Long id){
@@ -83,22 +77,25 @@ public class RaportController {
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
         raportRepository.deleteById(id);
-        return  new ResponseEntity<>("Deleted", HttpStatus.OK);
+        return  new ResponseEntity<>("Deleted with success", HttpStatus.OK);
     }
     @Transactional
     @PostMapping("/update")
     public ResponseEntity<Raport> update(@RequestBody Raport raport){
-        Long id = raport.getId();
-        Optional<Raport> result = raportRepository.findById(id);
-        if(result.isEmpty()){
+        Long raportId = raport.getId();
+        Optional<Raport> optionalRaport = raportRepository.findById(raportId);
+        if(optionalRaport.isEmpty()){
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
+
+        Raport raportToUpdate = optionalRaport.get();
+        raportToUpdate.udpateRaport(raport);
         try{
-            raport = raportRepository.save(raport);
+            raportToUpdate = raportRepository.save(raportToUpdate);
         }
         catch(Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new ResponseEntity<>(raport, HttpStatus.OK);
+        return new ResponseEntity<>(raportToUpdate, HttpStatus.OK);
     }
 }

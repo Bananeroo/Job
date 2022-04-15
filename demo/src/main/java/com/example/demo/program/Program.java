@@ -4,7 +4,6 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(name = "program")
@@ -15,7 +14,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
-public class Program implements Serializable {
+public class Program  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
@@ -35,6 +34,11 @@ public class Program implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public void updateProgram(Program program){
+        this.id = program.getId();
+        this.name = program.getName();
     }
 
 }
