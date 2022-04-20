@@ -11,7 +11,6 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @NoArgsConstructor
 @AllArgsConstructor
 public class Program  {
@@ -19,7 +18,6 @@ public class Program  {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
-    @NonNull
     @Column(name = "name")
     private String name;
 
@@ -34,6 +32,10 @@ public class Program  {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    public Program(String name) {
+        this.name = name;
     }
 
     public void updateProgram(Program program){

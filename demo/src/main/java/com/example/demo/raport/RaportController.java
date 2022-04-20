@@ -4,6 +4,10 @@ import com.example.demo.program.Program;
 import com.example.demo.program.ProgramRepository;
 import com.example.demo.programmer.Programmer;
 import com.example.demo.programmer.ProgrammerRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +36,23 @@ public class RaportController {
         List<Raport> listOfRaport = raportRepository.findAll();
         return  new ResponseEntity<>(listOfRaport, HttpStatus.OK);
     }
+    @GetMapping("/getAllPageable")
+    public ResponseEntity<List<Raport>>getAllPageAble( @RequestParam("page") int page, @RequestParam("size") int size){
+
+        if(page < 0 || size < 0) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        Pageable sortedById = PageRequest.of(page, size, Sort.by("id"));
+        List<Raport> listOfRaport = raportRepository.findAll(sortedById).getContent();
+
+        return  new ResponseEntity<>(listOfRaport, HttpStatus.OK);
+    }
+    @GetMapping("/getNumberOfRows")
+    public ResponseEntity<Long> getNumberOfRows(){
+        Long numberOfRows = raportRepository.count();
+
+        return  new ResponseEntity<>(numberOfRows, HttpStatus.OK);
+    }
+
+
 
     @RequestMapping("/findById")
         public ResponseEntity<Optional<Raport>> findById(@RequestParam("id") Long id){

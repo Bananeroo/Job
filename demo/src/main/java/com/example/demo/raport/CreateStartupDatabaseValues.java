@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 @Configuration
-public class RaportConfig {
+public class CreateStartupDatabaseValues {
     @Bean
     CommandLineRunner commandLineRunnerRaport(RaportRepository raportRepository, ProgramRepository programRepository,ProgrammerRepository programmerRepository){
         return args -> {
