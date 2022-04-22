@@ -4,7 +4,6 @@ import com.example.demo.program.Program;
 import com.example.demo.program.ProgramRepository;
 import com.example.demo.programmer.Programmer;
 import com.example.demo.programmer.ProgrammerRepository;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -40,8 +39,8 @@ public class RaportController {
     public ResponseEntity<List<Raport>>getAllPageAble( @RequestParam("page") int page, @RequestParam("size") int size){
 
         if(page < 0 || size < 0) return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-        Pageable sortedById = PageRequest.of(page, size, Sort.by("id"));
-        List<Raport> listOfRaport = raportRepository.findAll(sortedById).getContent();
+        Pageable pageMetadata = PageRequest.of(page, size, Sort.by("id"));
+        List<Raport> listOfRaport = raportRepository.findAll(pageMetadata).getContent();
 
         return  new ResponseEntity<>(listOfRaport, HttpStatus.OK);
     }
